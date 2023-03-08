@@ -55,7 +55,7 @@ get_placeholder() {
 }
 
 get_readme() {
-    curl -s https://raw.githubusercontent.com/AlexW00/cli-gpt/master/readme.md
+    curl -s https://raw.githubusercontent.com/AlexW00/cli-gpt/master/commands.md
 }
 
 show_help() {

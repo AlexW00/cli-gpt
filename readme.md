@@ -1,5 +1,7 @@
 # cli-gpt
 
+Usage: [commands](./commands.md)
+
 ## Installation
 
 ### Dependencies
