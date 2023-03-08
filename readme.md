@@ -1,6 +1,10 @@
 # cli-gpt
 
-Usage: `./cli-gpt`
+https://user-images.githubusercontent.com/55558407/223719418-26477b1e-1cf6-4f47-8810-69b665b260dd.mp4
+
+## Usage
+
+Run: `./cli-gpt`
 Other options: [commands](./commands.md)
 
 ## Installation
