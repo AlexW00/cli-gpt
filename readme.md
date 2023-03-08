@@ -5,6 +5,7 @@ https://user-images.githubusercontent.com/55558407/223719418-26477b1e-1cf6-4f47-
 ## Usage
 
 Run: `./cli-gpt`
+
 Other options: [commands](./commands.md)
 
 ## Installation
