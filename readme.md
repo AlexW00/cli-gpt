@@ -1,6 +1,7 @@
 # cli-gpt
 
-Usage: [commands](./commands.md)
+Usage: `./cli-gpt`
+Other options: [commands](./commands.md)
 
 ## Installation
 
