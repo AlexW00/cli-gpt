@@ -146,6 +146,8 @@ copy_to_clipboard() {
     elif [ "$(uname)" = "Darwin" ]; then
         echo "$str" | pbcopy
     fi
+
+    echo "Last message copied to clipboard"
 }
 
 copy_last_message() {
