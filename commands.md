@@ -1,5 +1,13 @@
 # Commands
 
+## Flags
+
+- list available prompts: `-l`, `--list-prompts`
+- use prompt: `-p`, `--prompt` + `=<prompt name>`
+  - e.g. `./cli-gpt -p=default`
+
+## Chat
+
 In the chat, you can use the following commands:
 
 - `:h` - show this help message

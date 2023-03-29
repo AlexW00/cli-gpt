@@ -5,10 +5,60 @@
 # ======================================================== #
 
 DEFAULT_SAVE_FILEPATH="$HOME/chat-export.md"
+PROMPTS_DIR="$HOME/.config/cli-gpt/prompts"
+
+# check if prompts dir exists
+if [ ! -d "$PROMPTS_DIR" ]; then
+    mkdir -p "$PROMPTS_DIR"
+    touch "$PROMPTS_DIR/default.txt"
+    echo "You are a helpful assistant. The user is interacting with you through the command line." > "$PROMPTS_DIR/default.txt"
+fi
+
+PROMPTS=()
+
+# load all prompts (= filename without extension)
+for file in "$PROMPTS_DIR"/*.txt; do
+    filename=$(basename -- "$file")
+    filename="${filename%.*}"
+    PROMPTS+=("$filename")
+done
 
 messages="[]"
 num_messages=0
 last_message_type=""
+
+# ~~~~~~~~~~~~~~~ get flags ~~~~~~~~~~~~~~~ #
+
+PROMPT_FLAG="-p"
+PROMPT_FLAG_LONG="--prompt"
+PROMPT_FLAG_VALUE="default"
+
+LIST_PROMPTS_FLAG="-l"
+LIST_PROMPTS_FLAG_LONG="--list-prompts"
+
+for arg in "$@"
+do
+    case $arg in
+        $PROMPT_FLAG=*|$PROMPT_FLAG_LONG=*)
+            if [[ ! " ${PROMPTS[*]} " =~ " ${arg#*=} " ]]; then
+                echo "Invalid prompt name: ${arg#*=} (valid prompts: ${PROMPTS[*]})"
+                exit 1
+            fi
+            PROMPT_FLAG_VALUE="${arg#*=}"
+            shift # Remove --prompt= from processing
+        ;;
+
+        "$LIST_PROMPTS_FLAG"|"$LIST_PROMPTS_FLAG_LONG")
+            echo "Available prompts: ${PROMPTS[*]}"
+            exit 0
+        ;;
+        *)
+            # unknown option
+            echo "Unknown option: '$arg'; available options: $PROMPT_FLAG, $PROMPT_FLAG_LONG, $LIST_PROMPTS_FLAG, $LIST_PROMPTS_FLAG_LONG"
+            exit 1
+        ;;
+    esac    
+done
 
 
 # ~~~~~~~~~~~ validate env vars ~~~~~~~~~~~ #
@@ -41,6 +91,8 @@ fi
 push_message() {
     role="$1"
     content="$2"
+    # escape content for json format
+    content=$(echo "$content" | sed -e 's/"/'\''/g')
     messages=$(echo "$messages" | jq ". += [{\"role\": \"$role\", \"content\": \"$content\"}]")
     num_messages=$((num_messages+1))
 }
@@ -161,7 +213,17 @@ show_messages() {
     messages_to_md | gum pager --soft-wrap
 }
 
-push_message "system" "You are a helpful assistant. The user is interacting with you through the command line."
+get_prompt_path() {
+    PROMPT_NAME="$1"
+    echo "$PROMPTS_DIR/$PROMPT_NAME.txt"
+}
+
+get_prompt() {
+    PROMPT_NAME="$1"
+    cat "$(get_prompt_path "$PROMPT_NAME")"
+}
+
+push_message "system" "$(get_prompt "$PROMPT_FLAG_VALUE")"
 
 
 while true; do
