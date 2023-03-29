@@ -36,6 +36,21 @@ PROMPT_FLAG_VALUE="default"
 LIST_PROMPTS_FLAG="-l"
 LIST_PROMPTS_FLAG_LONG="--list-prompts"
 
+MODEL_FLAG="-m"
+MODEL_FLAG_LONG="--model"
+MODEL_FLAG_VALUE="gpt-3.5-turbo"
+
+HELP_FLAG="-h"
+HELP_FLAG_LONG="--help"
+
+get_readme() {
+    curl -s https://raw.githubusercontent.com/AlexW00/cli-gpt/master/commands.md
+}
+
+show_help() {
+    get_readme | gum pager --soft-wrap 
+}
+
 for arg in "$@"
 do
     case $arg in
@@ -52,9 +67,20 @@ do
             echo "Available prompts: ${PROMPTS[*]}"
             exit 0
         ;;
+
+        "$MODEL_FLAG"=*|"$MODEL_FLAG_LONG"=*)
+            MODEL_FLAG_VALUE="${arg#*=}"
+            shift # Remove --model= from processing
+        ;;
+
+        "$HELP_FLAG"|"$HELP_FLAG_LONG")
+            show_help
+            exit 0
+        ;;
+
         *)
             # unknown option
-            echo "Unknown option: '$arg'; available options: $PROMPT_FLAG, $PROMPT_FLAG_LONG, $LIST_PROMPTS_FLAG, $LIST_PROMPTS_FLAG_LONG"
+            echo "Unknown option: '$arg'; see help with -h or --help for available options."
             exit 1
         ;;
     esac    
@@ -106,13 +132,6 @@ get_placeholder() {
     fi
 }
 
-get_readme() {
-    curl -s https://raw.githubusercontent.com/AlexW00/cli-gpt/master/commands.md
-}
-
-show_help() {
-    get_readme | gum pager --soft-wrap 
-}
 
 prompt_user_message() {
     content=$(gum input --placeholder "$(get_placeholder)")
@@ -142,7 +161,7 @@ get_chatgpt_response () {
     -H "Authorization: Bearer $OPENAI_API_KEY" \
     -H "Content-Type: application/json" \
     -d "{
-    \"model\": \"gpt-3.5-turbo\",
+    \"model\": \"$MODEL_FLAG_VALUE\",
     \"messages\": $messages
     }"
 }
