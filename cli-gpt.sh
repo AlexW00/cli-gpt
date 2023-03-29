@@ -60,7 +60,7 @@ do
     case $arg in
         $SYS_PROMPT_FLAG=*|$SYS_PROMPT_FLAG_LONG=*)
             if [[ ! " ${PROMPTS[*]} " =~ " ${arg#*=} " ]]; then
-                echo "Invalid prompt name: ${arg#*=} (valid prompts: ${PROMPTS[*]})"
+                echo "Invalid system prompt name: ${arg#*=} (valid prompts: ${PROMPTS[*]})"
                 exit 1
             fi
             SYS_PROMPT_FLAG_VALUE="${arg#*=}"
