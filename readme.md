@@ -10,7 +10,7 @@ Other options: [commands](./commands.md)
 
 ## Configuration
 
-- place custom (system) prompts in `~/.config/cli-gpt/prompts/*.txt`
+- place custom (system) prompts in `~/.config/cli-gpt/system-prompts/*.txt`
   - to use a custom prompt, see [commands](./commands.md)
 
 ## Installation
