@@ -2,11 +2,15 @@
 
 ## Flags
 
+(all flags are optional)
+
 - help: `-h`, `--help`
 - set model: `-m`, `--model` + `=<model name>` (default = `gpt-3.5-turbo`)
   - e.g. `./cli-gpt -m=gpt-4`
-- list available system prompts: `-l`, `--list-prompts`
-- use system prompt: `-p`, `--prompt` + `=<prompt name>`
+- start with initial prompt: `-p`, `--prompt` + `=<prompt name>`
+  - e.g. `./cli-gpt -p="what is 2+2?"`
+- list available system prompts: `-ls`, `--list-system-prompts`
+- use system prompt: `-s`, `--system-prompt` + `=<prompt name>`
   - e.g. `./cli-gpt -p=default`
 
 ## Chat

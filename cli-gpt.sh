@@ -5,7 +5,7 @@
 # ======================================================== #
 
 DEFAULT_SAVE_FILEPATH="$HOME/chat-export.md"
-PROMPTS_DIR="$HOME/.config/cli-gpt/prompts"
+PROMPTS_DIR="$HOME/.config/cli-gpt/system-prompts"
 
 # check if prompts dir exists
 if [ ! -d "$PROMPTS_DIR" ]; then
@@ -29,16 +29,20 @@ last_message_type=""
 
 # ~~~~~~~~~~~~~~~ get flags ~~~~~~~~~~~~~~~ #
 
-PROMPT_FLAG="-p"
-PROMPT_FLAG_LONG="--prompt"
-PROMPT_FLAG_VALUE="default"
+SYS_PROMPT_FLAG="-s"
+SYS_PROMPT_FLAG_LONG="--system-prompt"
+SYS_PROMPT_FLAG_VALUE="default"
 
-LIST_PROMPTS_FLAG="-l"
-LIST_PROMPTS_FLAG_LONG="--list-prompts"
+LIST_SYS_PROMPTS_FLAG="-ls"
+LIST_SYS_PROMPTS_FLAG_LONG="--list-system-prompts"
+
+START_PROMPT_FLAG="-p"
+START_PROMPT_FLAG_LONG="--prompt"
+START_PROMPT_FLAG_VALUE=""
 
 MODEL_FLAG="-m"
 MODEL_FLAG_LONG="--model"
-MODEL_FLAG_VALUE="gpt-3.5-turbo"
+MODEL_FLAG_VALUE="gpt-4"
 
 HELP_FLAG="-h"
 HELP_FLAG_LONG="--help"
@@ -54,23 +58,28 @@ show_help() {
 for arg in "$@"
 do
     case $arg in
-        $PROMPT_FLAG=*|$PROMPT_FLAG_LONG=*)
+        $SYS_PROMPT_FLAG=*|$SYS_PROMPT_FLAG_LONG=*)
             if [[ ! " ${PROMPTS[*]} " =~ " ${arg#*=} " ]]; then
                 echo "Invalid prompt name: ${arg#*=} (valid prompts: ${PROMPTS[*]})"
                 exit 1
             fi
-            PROMPT_FLAG_VALUE="${arg#*=}"
+            SYS_PROMPT_FLAG_VALUE="${arg#*=}"
             shift # Remove --prompt= from processing
         ;;
 
-        "$LIST_PROMPTS_FLAG"|"$LIST_PROMPTS_FLAG_LONG")
-            echo "Available prompts: ${PROMPTS[*]}"
+        "$LIST_SYS_PROMPTS_FLAG"|"$LIST_SYS_PROMPTS_FLAG_LONG")
+            echo "Available system prompts: ${PROMPTS[*]}"
             exit 0
         ;;
 
         "$MODEL_FLAG"=*|"$MODEL_FLAG_LONG"=*)
             MODEL_FLAG_VALUE="${arg#*=}"
             shift # Remove --model= from processing
+        ;;
+
+        "$START_PROMPT_FLAG"=*|"$START_PROMPT_FLAG_LONG"=*)
+            START_PROMPT_FLAG_VALUE="${arg#*=}"
+            shift # Remove --prompt= from processing
         ;;
 
         "$HELP_FLAG"|"$HELP_FLAG_LONG")
@@ -134,7 +143,15 @@ get_placeholder() {
 
 
 prompt_user_message() {
-    content=$(gum input --placeholder "$(get_placeholder)")
+    content=""
+
+    if [ -n "$START_PROMPT_FLAG_VALUE" ]; then
+        content="$START_PROMPT_FLAG_VALUE"
+        START_PROMPT_FLAG_VALUE=""
+    else
+        content=$(gum input --placeholder "$(get_placeholder)")
+    fi
+
     # if message is empty, q, exit, or ctrl-c
     if [ -z "$content" ] || [ "$content" = ":q" ] || [ "$content" = "exit" ]; then
         last_message_type="exit"
@@ -242,7 +259,7 @@ get_prompt() {
     cat "$(get_prompt_path "$PROMPT_NAME")"
 }
 
-push_message "system" "$(get_prompt "$PROMPT_FLAG_VALUE")"
+push_message "system" "$(get_prompt "$SYS_PROMPT_FLAG_VALUE")"
 
 
 while true; do
