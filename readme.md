@@ -23,7 +23,7 @@ Other options: [commands](./commands.md)
 ### Installing
 
 1. install the dependencies
-2. set the `OPENAI_API_KEY` environment variable to [your OpenAI API key](https://help.openai.com/en/articles/4936850-where-do-i-find-my-secret-api-key)
+2. set the `OPENAI_API_KEY` environment variable to [your OpenAI API key](https://help.openai.com/en/articles/4936850-where-do-i-find-my-secret-api-key) (`export OPENAI_API_KEY="<your-api-key>"`)
 3. clone this repo & `cd` into it
 4. `chmod +x ./cli-gpt`
 5. ./cli-gpt
