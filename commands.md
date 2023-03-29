@@ -12,7 +12,7 @@
 - list available system prompts: `-ls`, `--list-system-prompts`
 - use system prompt: `-s`, `--system-prompt` + `=<prompt name>`
   - e.g. `./cli-gpt -p=default`
-  - to add a custom system prompt, place a .txt file in `~/.config/cli-gpt/prompts/*.txt`
+  - to add a custom system prompt, place a .txt file in `~/.config/cli-gpt/system-prompts/*.txt`
 
 ## Chat
 
