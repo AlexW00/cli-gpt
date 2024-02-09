@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/zsh
 
 # ======================================================== #
 # ======================== cli gpt ======================= #
@@ -122,12 +122,11 @@ if [ "$(uname)" = "Linux" ]; then
 fi
 
 # ~~~~~~~~~~~~~~~~~~ code ~~~~~~~~~~~~~~~~~ #
-
 push_message() {
     role="$1"
     content="$2"
     # escape content for json format
-    content=$(echo "$content" | sed -e 's/"/'\''/g')
+    content=$(echo "$content" | sed -e 's/\\/\\\\/g' -e 's/"/\\"/g' -e 's/\n/\\n/g' -e 's/\t/\\t/g' -e 's/\r/\\r/g')
     messages=$(echo "$messages" | jq ". += [{\"role\": \"$role\", \"content\": \"$content\"}]")
     num_messages=$((num_messages+1))
 }
